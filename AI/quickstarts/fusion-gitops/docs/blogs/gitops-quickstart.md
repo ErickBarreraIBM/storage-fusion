@@ -1,4 +1,4 @@
-# Quickstart: Red Hat OpenShift GitOps (ArgoCD) on IBM Fusion
+# Quickstart: GitOps (ArgoCD) on IBM Fusion
 
 ## The Challenge: GitOps Setup Complexity
 
@@ -6,7 +6,7 @@ Picture this: Your team has just been tasked with deploying a new AI/ML pipeline
 
 Not quite. Setting up a production-ready GitOps platform traditionally involves:
 
-- **Days of operator installations**: Manually configuring Red Hat OpenShift GitOps, HashiCorp Vault, and External Secrets Operator
+- **Days of operator installations**: Manually configuring GitOps, HashiCorp Vault, and External Secrets Operator
 - **Configuration maze**: Wrestling with operator subscriptions, waiting for CRDs to become available, and debugging RBAC issues
 - **Storage headaches**: Setting up persistent storage with appropriate performance characteristics for each component
 - **Integration challenges**: Ensuring all components communicate securely and work together seamlessly
@@ -25,7 +25,7 @@ Whether you're deploying AI/ML workloads, managing microservices, or orchestrati
 
 This quickstart delivers three integrated components that work seamlessly together:
 
-### 🚀 Red Hat OpenShift GitOps (ArgoCD)
+### 🚀 GitOps (ArgoCD)
 Enterprise-grade continuous delivery with declarative GitOps workflows. Deploy applications, manage configurations, and maintain consistency across environments, all from Git.
 
 **Key capabilities:**
@@ -106,7 +106,7 @@ git remote -v
 
 All commands should be run from the `quickstarts/fusion-gitops` directory.
 
-### Step 1: Deploy Red Hat OpenShift GitOps
+### Step 1: Deploy GitOps
 
 Deploy ArgoCD as the foundation for your GitOps platform:
 
@@ -117,7 +117,7 @@ Deploy ArgoCD as the foundation for your GitOps platform:
 
 **What happens during deployment:**
 1. Creates `openshift-gitops-operator` namespace
-2. Installs Red Hat OpenShift GitOps operator
+2. Installs GitOps operator
 3. Waits for operator to be ready
 4. Deploys ArgoCD instance with production-ready defaults
 5. Configures persistent storage for ArgoCD components
@@ -152,11 +152,14 @@ oc get secret openshift-gitops-cluster -n openshift-gitops \
 Choose the appropriate values file for your environment:
 
 ```bash
-# Development/Testing (minimal resources)
-./scripts/deploy-gitops.sh -f helm/fusion-gitops/values-minimal.yaml
+# Development (minimal resources)
+./scripts/deploy-gitops.sh -f helm/fusion-gitops/environments/dev/values.yaml
+
+# Staging (moderate resources for pre-production testing)
+./scripts/deploy-gitops.sh -f helm/fusion-gitops/environments/stage/values.yaml
 
 # Production (HA with persistent storage)
-./scripts/deploy-gitops.sh -f helm/fusion-gitops/values-production.yaml
+./scripts/deploy-gitops.sh -f helm/fusion-gitops/environments/prod/values.yaml
 
 # OpenShift Data Foundation storage
 ./scripts/deploy-gitops.sh -f helm/fusion-gitops/values-odf.yaml
@@ -224,20 +227,33 @@ oc get secret vault-unseal-keys -n vault -o yaml > vault-keys-backup.yaml
 # oc delete secret vault-unseal-keys -n vault
 ```
 
-#### Custom Vault Configurations
+#### Environment-Specific Deployments
+
+Choose the appropriate values file for your environment:
 
 ```bash
-# Use specific storage class
-./scripts/deploy-secret-manager.sh --storage-class ocs-storagecluster-ceph-rbd
+# Development (single replica, minimal resources, monitoring off)
+./scripts/deploy-secret-manager.sh -f helm/vault-operator/environments/dev/values.yaml
 
-# Production deployment with HA
-./scripts/deploy-secret-manager.sh --namespace vault-prod --replicas 5 --size 20Gi
+# Staging (3 replicas, moderate resources, monitoring on)
+./scripts/deploy-secret-manager.sh -f helm/vault-operator/environments/stage/values.yaml
 
-# Custom namespace with specific storage
+# Production (3 replicas, full resources, required pod anti-affinity)
+./scripts/deploy-secret-manager.sh -f helm/vault-operator/environments/prod/values.yaml
+```
+
+You can further override individual values on top of an environment file:
+
+```bash
+# Use a different storage class with the dev profile
 ./scripts/deploy-secret-manager.sh \
-  --namespace vault-staging \
-  --storage-class thin \
-  --size 15Gi
+  -f helm/vault-operator/environments/dev/values.yaml \
+  --storage-class ocs-storagecluster-ceph-rbd
+
+# Use a custom storage class with the prod profile
+./scripts/deploy-secret-manager.sh \
+  -f helm/vault-operator/environments/prod/values.yaml \
+  --storage-class ocs-storagecluster-ceph-rbd
 ```
 
 #### Validate Vault Deployment
@@ -283,6 +299,38 @@ After deploying the operator, configure Vault as the secret backend:
 ./scripts/deploy-external-secrets.sh --backend vault
 ```
 
+#### Environment-Specific Deployments
+
+Choose the appropriate values file for your environment. The script auto-detects the active backend from the file, or use `-b` to force a backend regardless of what the file says:
+
+```bash
+# Development (1 replica, reduced resources, PDB disabled)
+./scripts/deploy-external-secrets.sh \
+  -f helm/external-secrets-operator/environments/dev/values.yaml
+
+# Staging (2 replicas, full resources, certController HA)
+./scripts/deploy-external-secrets.sh \
+  -f helm/external-secrets-operator/environments/stage/values.yaml
+
+# Production (2 replicas, Manual upgrade approval)
+./scripts/deploy-external-secrets.sh \
+  -f helm/external-secrets-operator/environments/prod/values.yaml
+```
+
+Force a specific backend on top of any environment file with `-b`:
+
+```bash
+# Vault backend with dev profile
+./scripts/deploy-external-secrets.sh \
+  -b vault \
+  -f helm/external-secrets-operator/environments/dev/values.yaml
+
+# Vault backend with prod profile
+./scripts/deploy-external-secrets.sh \
+  -b vault \
+  -f helm/external-secrets-operator/environments/prod/values.yaml
+```
+
 #### Validate External Secrets Deployment
 
 Run the validation script:
@@ -304,7 +352,7 @@ The Fusion GitOps Quickstart creates a layered architecture optimized for Fusion
 │                   Fusion HCI Cluster                     │
 │                                                          │
 │  ┌────────────────────────────────────────────────────┐  │
-│  │         Red Hat OpenShift GitOps (ArgoCD)          │  │
+│  │                 GitOps (ArgoCD)                    │  │
 │  ├────────────────────────────────────────────────────┤  │
 │  │  • Continuous Delivery                             │  │
 │  │  • Application Lifecycle Management                │  │
@@ -388,7 +436,7 @@ Remove deployed components safely using the provided cleanup scripts. Always cle
 
 ## Conclusion
 
-The Fusion GitOps Quickstart transforms what used to be a multi-day configuration project into a quick automated deployment. By combining Red Hat OpenShift GitOps, HashiCorp Vault, and External Secrets Operator with production-ready defaults and comprehensive automation, it eliminates the complexity of GitOps platform setup.
+The Fusion GitOps Quickstart transforms what used to be a multi-day configuration project into a quick automated deployment. By combining GitOps, HashiCorp Vault, and External Secrets Operator with production-ready defaults and comprehensive automation, it eliminates the complexity of GitOps platform setup.
 
 **What you've accomplished:**
 - Deployed enterprise-grade GitOps platform in minutes

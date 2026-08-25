@@ -1,0 +1,576 @@
+.chat-interface {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 65px);
+  background-color: var(--bg-page);
+}
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.message {
+  display: flex;
+  gap: 1rem;
+  animation: messageSlideIn 0.3s ease;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.user .message-content {
+  flex: none;
+  max-width: 75%;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--bg-surface);
+  overflow: hidden;
+}
+
+.bot-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bot-avatar-image--dark {
+  mix-blend-mode: screen;
+}
+
+.message-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.message-sender-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.copy-button {
+  background: none;
+  border: none;
+  padding: 0.375rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.message:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+}
+
+.copy-button:active {
+  transform: scale(0.95);
+}
+
+.message-text {
+  background-color: var(--bg-surface);
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  word-wrap: break-word;
+}
+
+.message.user .message-text {
+  background-color: var(--accent);
+  color: white;
+}
+
+.message.assistant .message-text {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  color: var(--text-primary);
+}
+
+/* Markdown body styles for assistant responses */
+.markdown-body p {
+  margin: 0 0 0.75rem 0;
+}
+
+.markdown-body p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body strong {
+  font-weight: 600;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.markdown-body h1 { font-size: 1.25rem; }
+.markdown-body h2 { font-size: 1.1rem; }
+.markdown-body h3 { font-size: 1rem; }
+
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.markdown-body li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.25rem 0;
+}
+
+.markdown-body code {
+  background-color: var(--bg-code);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+}
+
+.markdown-body pre {
+  background-color: var(--bg-code-block);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+}
+
+.markdown-body blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 0.75rem 0;
+  padding: 0.25rem 0.75rem;
+  color: var(--text-secondary);
+}
+
+.source-line {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+}
+
+.model-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* Generating Indicator */
+.generating-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.generating-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  animation: generatingPulse 1.2s infinite ease-in-out;
+}
+
+.generating-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+@keyframes generatingPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 1rem;
+  background-color: var(--bg-surface);
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  animation: typing 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+/* LLM Warning Banner */
+.llm-warning-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 900px;
+  margin: 0 auto 0.6rem auto;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--warn-border);
+  background-color: var(--warn-bg);
+  font-size: 0.8rem;
+  color: var(--warn-text);
+  line-height: 1.4;
+}
+
+.llm-warning-text {
+  flex: 1;
+}
+
+.llm-warning-text strong {
+  font-weight: 600;
+  color: var(--warn-strong);
+}
+
+.llm-warning-text code {
+  background-color: var(--warn-code-bg);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  font-size: 0.78rem;
+  font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+}
+
+.llm-warning-dismiss {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.llm-warning-dismiss:hover {
+  color: var(--text-secondary);
+}
+
+/* Input Container */
+.input-container {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+  background-color: var(--bg-page);
+}
+
+/* Wraps the + button and the chat form side-by-side.
+   The MCP panel is anchored to this row, not the outer container,
+   so it stays aligned with the + button even when the page is wide. */
+.input-row {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  position: relative;
+}
+
+.input-form {
+  flex: 1;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.message-input {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  resize: none;
+  max-height: 150px;
+  min-height: 44px;
+  line-height: 1.5;
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+.message-input::placeholder {
+  color: var(--text-faint);
+}
+
+.message-input:disabled {
+  background-color: var(--bg-surface);
+  cursor: not-allowed;
+}
+
+.send-button,
+.stop-button {
+  width: 48px;
+  align-self: stretch;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+.send-button {
+  border: none;
+  background-color: var(--accent);
+  color: white;
+}
+
+.send-button:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.send-button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.send-button:disabled {
+  background-color: var(--border);
+  cursor: not-allowed;
+}
+
+.stop-button {
+  border: 2px solid var(--accent);
+  background-color: var(--pill-bg);
+  color: var(--accent);
+}
+
+.stop-button:hover {
+  background-color: var(--accent);
+  color: white;
+}
+
+.stop-button:active {
+  transform: scale(0.95);
+}
+
+/* Scrollbar Styling */
+.messages-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 4px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+/* ── MCP + button ────────────────────────────────────────────────────── */
+
+.mcp-btn-wrapper {
+  position: relative;
+  align-self: flex-end;
+  flex-shrink: 0;
+}
+
+.mcp-connections-btn {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 50%;
+  background-color: var(--bg-input);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+
+.mcp-connections-btn:hover {
+  background-color: var(--bg-surface);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: scale(1.06);
+}
+
+.mcp-connections-btn:active {
+  transform: scale(0.94);
+}
+
+/* Lit up when at least one connection is enabled */
+.mcp-connections-btn--active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background-color: var(--accent-subtle);
+}
+
+/* Rotates to × when the panel is open */
+.mcp-connections-btn[aria-expanded="true"] svg {
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+.mcp-connections-btn[aria-expanded="false"] svg,
+.mcp-connections-btn:not([aria-expanded]) svg {
+  transition: transform 0.2s ease;
+}
+
+.mcp-connections-badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background-color: var(--accent);
+  color: #fff;
+  font-size: 0.58rem;
+  font-weight: 700;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  padding: 0 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 0 0 2px var(--bg-input);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .messages-container {
+    padding: 1rem;
+  }
+
+  .input-container {
+    padding: 1rem;
+  }
+
+  .messages-list {
+    gap: 1rem;
+  }
+}
